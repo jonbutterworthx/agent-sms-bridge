@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily local Agent SMS Bridge snapshot
+
+[Timer]
+OnCalendar=*-*-* 03:20:00 UTC
+RandomizedDelaySec=5m
+Persistent=true
+
+[Install]
+WantedBy=timers.target

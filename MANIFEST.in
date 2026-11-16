@@ -1,0 +1,5 @@
+include README.md SECURITY.md NOTICE.md LICENSE pyproject.toml
+include docs/API.md docs/INSTALL.md docs/RECOVERY.md
+include examples/setup.json
+include deploy/*.service deploy/*.timer
+include tests/*.py

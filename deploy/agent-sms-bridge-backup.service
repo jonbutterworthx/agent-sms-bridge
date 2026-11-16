@@ -1,0 +1,11 @@
+[Unit]
+Description=Agent SMS Bridge local SQLite snapshot
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/share/agent-sms-bridge/venv/bin/agent-sms-bridge-admin --config %h/.local/share/agent-sms-bridge/data/config.json backup
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=%h/.local/share/agent-sms-bridge/data

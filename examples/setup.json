@@ -1,0 +1,9 @@
+{
+  "gateway_url": "http://127.0.0.1:8080",
+  "gateway_username": "REPLACE_LOCALLY",
+  "gateway_password": "REPLACE_LOCALLY",
+  "installed_version": "1.78.3",
+  "owner_name": "Example Owner",
+  "owner_number": "+12025550123",
+  "device_number": ""
+}

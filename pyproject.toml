@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-sms-bridge"
+version = "0.1.0rc1"
+description = "Private SMS bridge with durable history and explicit recipient permissions"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "jonbutterworthx"}]
+dependencies = []
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Operating System :: POSIX :: Linux",
+]
+
+[project.urls]
+"Intended repository (unpublished)" = "https://github.com/jonbutterworthx/agent-sms-bridge"
+
+[project.scripts]
+agent-sms-bridge-server = "communications.server:main"
+agent-sms-bridge-admin = "communications.admin:main"
+agent-sms-bridge-setup = "communications.setup:main"
+agent-sms-bridge-configure = "communications.configuration:main"
+
+[tool.setuptools.packages.find]
+include = ["communications*"]
+
+[tool.setuptools.data-files]
+"share/agent-sms-bridge" = ["README.md", "SECURITY.md", "NOTICE.md", "LICENSE"]
+"share/agent-sms-bridge/docs" = ["docs/API.md", "docs/INSTALL.md", "docs/RECOVERY.md"]
+"share/agent-sms-bridge/examples" = ["examples/setup.json"]
+"share/agent-sms-bridge/deploy" = ["deploy/agent-sms-bridge.service", "deploy/agent-sms-bridge-backup.service", "deploy/agent-sms-bridge-backup.timer"]
