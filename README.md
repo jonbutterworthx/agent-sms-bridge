@@ -9,6 +9,8 @@ service, or particular VPN or backup vendor.
 [Repository](https://github.com/jonbutterworthx/agent-sms-bridge). Licensed under
 [MIT](LICENSE); see [provenance](NOTICE.md) and [security reporting](SECURITY.md).
 
+![SMSGate on Android exchanges SMS with Agent SMS Bridge, which connects to agents and apps in both directions.](docs/assets/architecture.png)
+
 - Durable intake and history, with cursor recovery and duplicate suppression.
 - Scoped API tokens, explicit international numbers, and per-number blocking.
 - Idempotent submissions; uncertain phone submissions are never blindly resent.
