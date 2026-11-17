@@ -19,7 +19,7 @@ classifiers = [
 ]
 
 [project.urls]
-"Intended repository (unpublished)" = "https://github.com/jonbutterworthx/agent-sms-bridge"
+"Repository" = "https://github.com/jonbutterworthx/agent-sms-bridge"
 
 [project.scripts]
 agent-sms-bridge-server = "communications.server:main"

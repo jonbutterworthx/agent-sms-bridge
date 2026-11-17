@@ -9,12 +9,12 @@ Create a protected mode 0600 client request file with a unique `id`, explicit `n
 ```
 
 ```sh
-agent-sms-bridge-admin --config /ABSOLUTE/DATA/config.json client \
+"$HOME/.local/share/agent-sms-bridge/venv/bin/agent-sms-bridge-admin" --config /ABSOLUTE/DATA/config.json client \
   --input-file /ABSOLUTE/PRIVATE/client-request.json \
   --output-file /ABSOLUTE/PRIVATE/client-token.json
 ```
 
-The token is written privately, never printed, and only its hash is stored in SQLite. Revocation: `agent-sms-bridge-admin --config /ABSOLUTE/DATA/config.json revoke example-reader`. Do not place tokens in URLs, command-line arguments, source files, logs or screenshots.
+The token is written privately, never printed, and only its hash is stored in SQLite. Revocation: `"$HOME/.local/share/agent-sms-bridge/venv/bin/agent-sms-bridge-admin" --config /ABSOLUTE/DATA/config.json revoke example-reader`. Do not place tokens in URLs, command-line arguments, source files, logs or screenshots.
 
 | Method and route | Required scope | Result |
 | --- | --- | --- |

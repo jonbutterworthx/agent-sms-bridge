@@ -5,8 +5,9 @@ Agent SMS Bridge keeps observed SMS in SQLite and exposes a private API with
 explicit recipient permissions. It works without an AI provider, hosted messaging
 service, or particular VPN or backup vendor.
 
-**0.1.0rc2 is a local review candidate, not a published release.** Intended
-repository: `jonbutterworthx/agent-sms-bridge`. Licensed under [MIT](LICENSE); see [provenance](NOTICE.md).
+**0.1.0rc2 is an early prerelease, not a stable release.**
+[Repository](https://github.com/jonbutterworthx/agent-sms-bridge). Licensed under
+[MIT](LICENSE); see [provenance](NOTICE.md) and [security reporting](SECURITY.md).
 
 - Durable intake and history, with cursor recovery and duplicate suppression.
 - Scoped API tokens, explicit international numbers, and per-number blocking.
@@ -17,7 +18,7 @@ repository: `jonbutterworthx/agent-sms-bridge`. Licensed under [MIT](LICENSE); s
 - Optional temporary setup form or a JSON/CLI route using the same validation.
 
 Requires Python 3.11+ on a Unix-like host and a reachable private SMSGate API.
-Local package tests cover Python 3.13/Linux; the adapter contract was reviewed
+Local package tests cover Python 3.13/Linux aarch64; the adapter contract was reviewed
 against SMSGate 1.78.3. Other app versions need renewed verification. Use verified
 HTTPS or an encrypted private tunnel to the phone; a private IP alone does not
 encrypt credentials or messages.

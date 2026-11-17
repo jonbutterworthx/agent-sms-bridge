@@ -8,6 +8,9 @@ python3 -m venv "$HOME/.local/share/agent-sms-bridge/venv"
 install -d -m 700 "$HOME/.local/share/agent-sms-bridge/data"
 ```
 
+Commands below use explicit venv paths; activation is not required. If you choose
+a different installation directory, adjust every executable path accordingly.
+
 Keep the source revision/wheel and dependency build inputs pinned for repeatable deployment. No network exposure or system-service installation is performed by package installation.
 
 ## Optional initial form
@@ -42,10 +45,10 @@ This validates without writing. Add `--apply` to create the initial config and o
 
 ## Verify before enabling
 
-1. Run `agent-sms-bridge-admin --config /ABSOLUTE/DATA/config.json probe`. This is authenticated read-only access and reports schema metadata, not bodies or credentials.
+1. Run `"$HOME/.local/share/agent-sms-bridge/venv/bin/agent-sms-bridge-admin" --config /ABSOLUTE/DATA/config.json probe`. This is authenticated read-only access and reports schema metadata, not bodies or credentials.
 2. Record the exact installed Android app version. Version or `contentPreview` naming alone does not establish complete SMS text. Compare observed API content privately against a known long/multipart SMS, including beginning, middle and ending, and verify that app version's contract. Test only with a consenting recipient.
 3. Preserve private comparison evidence. Only after success, set `inbox_full_body_verified` to true and `inbox_verification_evidence` to a nonempty protected evidence reference. Reverify after an app upgrade. Until then the service stores preview observations but excludes them from permitted history.
-4. Start in the foreground using `agent-sms-bridge-server --config /ABSOLUTE/DATA/config.json`. Check health and polling freshness. Unverified initial backfill remains historical and cannot become new work automatically.
+4. Start in the foreground using `"$HOME/.local/share/agent-sms-bridge/venv/bin/agent-sms-bridge-server" --config /ABSOLUTE/DATA/config.json`. Check health and polling freshness. Unverified initial backfill remains historical and cannot become new work automatically.
 5. Provision a scoped client as described in API.md. Review owner permission and set `outbound_enabled` true only when intentionally permitting queued sends. Inspect existing queues before enabling. A controlled test send requires explicit recipient intent.
 
 The installed wheel includes documentation, examples and optional units under

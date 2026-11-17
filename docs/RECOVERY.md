@@ -2,12 +2,12 @@
 
 Required recovery material includes the SQLite database, private configuration/credentials, exact-version full-content verification evidence, reviewed service definitions and a pinned source/package revision. Independent API client tokens need protected backup or deliberate revocation/reprovisioning. Data-root permissions must stay 0700 and sensitive files 0600. Application files are not encrypted at rest; use an encrypted backup destination and an appropriate host account/storage policy.
 
-`agent-sms-bridge-admin --config /ABSOLUTE/DATA/config.json backup` uses SQLite's online backup API and checks integrity. It creates a private snapshot under the configured data directory's `backups` subdirectory. Do not copy a live DB without coordinating its WAL. No snapshot uploads, deletion or retention automation are included. Same-disk snapshots do not protect against disk loss.
+`"$HOME/.local/share/agent-sms-bridge/venv/bin/agent-sms-bridge-admin" --config /ABSOLUTE/DATA/config.json backup` uses SQLite's online backup API and checks integrity. It creates a private snapshot under the configured data directory's `backups` subdirectory. Do not copy a live DB without coordinating its WAL. No snapshot uploads, deletion or retention automation are included. Same-disk snapshots do not protect against disk loss.
 
 Verify a selected snapshot into a fresh isolated directory beneath the private data root:
 
 ```sh
-agent-sms-bridge-admin --config /ABSOLUTE/DATA/config.json verify-restore \
+"$HOME/.local/share/agent-sms-bridge/venv/bin/agent-sms-bridge-admin" --config /ABSOLUTE/DATA/config.json verify-restore \
   --backup /ABSOLUTE/DATA/backups/SELECTED.db \
   --destination /ABSOLUTE/DATA/restore-check
 ```

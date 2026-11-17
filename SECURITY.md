@@ -1,14 +1,16 @@
 # Security and limits
 
-Contact the maintainer through an existing private channel to arrange a security
-report. If you do not have one, request a private contact route without including
-vulnerability details. Do not post credentials, phone numbers, message bodies or
-private logs in an issue. Include the affected version, a minimal synthetic
-reproduction, impact and sanitized metadata in the private report.
+The selected reporting route for the public prerelease is GitHub private
+vulnerability reporting. When enabled, open
+[Agent SMS Bridge security advisories](https://github.com/jonbutterworthx/agent-sms-bridge/security/advisories)
+and choose **Report a vulnerability**. Include the affected version, a minimal
+synthetic reproduction, impact and sanitized metadata in the private report.
 
-This project is in a private-repository phase. GitHub's private vulnerability
-reporting is available for public repositories, so it is not the reporting route
-here. See [GitHub's reporting documentation](https://docs.github.com/en/code-security/concepts/vulnerability-reporting-and-management/repository-security-advisories).
+This route requires a public repository and explicit maintainer enablement;
+this policy does not enable it. While the repository is private, or if the
+reporting button is absent, the route is unavailable. Do not put vulnerability
+details, credentials, phone numbers, message bodies or private logs in public
+issues. See [GitHub's private reporting guide](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/report-privately).
 
 The local OS account and root can read private state. The service is not a sandbox for malicious code running as that account. Use protected directories, separate revocable client tokens and explicit number scopes. Credentials must stay outside source control. Browser origins are rejected by the API; the optional initial form is loopback-only with a private one-time code, CSRF and strict Origin/Host checks.
 
