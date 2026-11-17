@@ -247,7 +247,7 @@ def main():
     root.mkdir(mode=0o700, parents=True, exist_ok=True)
     lock = open(root / 'service.lock', 'a')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    store = Store(root / 'messages.db')
+    store = Store(root / 'messages.db', config['normalization_profile'])
     recover_interrupted(store)
     stop = threading.Event()
     servers = [Server(('127.0.0.1', config.get('api_port', 4190)), store, config)]

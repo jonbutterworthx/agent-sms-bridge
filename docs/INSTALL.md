@@ -70,3 +70,27 @@ User-service boot behavior depends on your account's login/linger policy. Enabli
 Before upgrading, stop the service, preserve the current private config and a consistent online SQLite snapshot, and record the old package revision. Install the reviewed pinned replacement into a separate venv, run tests and isolated restore checks, then switch the unit to that venv and start. Inspect polling, history and pending/unknown submissions. Never run two instances against the same database; a process lock enforces one owner. Do not restore an old database merely to roll back code because that discards later history and may replay sends.
 
 To remove runtime activation: `systemctl --user disable --now agent-sms-bridge.service agent-sms-bridge-backup.timer`, remove only the reviewed units, and reload user units. Remove the package/venv if desired. Preserve private config, database/WAL files, evidence and backups until you deliberately decide their retention. Uninstall does not delete message history or revoke Android credentials for you.
+
+
+## Opt-in compatibility for an existing legacy installation
+
+New configurations default to `"normalization_profile": "strict"`: explicit
+country codes are required and national identifiers remain opaque. Initial setup
+always uses this default. No geographic region is guessed.
+
+Only a reviewed migration from the earlier NANP deployment should explicitly set
+`"normalization_profile": "legacy-nanp-v1"` in its private runtime configuration.
+This preserves its exact national 10/11-digit expansion and its treatment of short
+explicit identifiers. The profile applies per Store to contacts, policies,
+principals, intake, outgoing requests, delivery receipts and status matching;
+server and admin commands both load it. Unknown profiles fail before storage is
+opened. Configuration owner/device numbers still require explicit country codes.
+
+Selecting a profile does not rewrite stored history, permissions or raw inputs.
+Keep it consistent across service/admin processes. Do not switch profiles on an
+existing database without a reviewed compatibility rehearsal: changed matching can
+alter permissions or status reconciliation even with identical storage schema.
+Preserve the existing effective device identity explicitly in `device_id` during
+migration, because it participates in deduplication. Keep the latest database for
+rollback so post-upgrade messages and send attempts survive. This option does not
+authorize a live cutover, sending, provider calls or policy changes.

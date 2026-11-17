@@ -104,8 +104,7 @@ def reconcile(store, gateway, message):
         if result.get('id') != message['provider_id']:
             raise GatewayError('status_identity_mismatch')
         recipients = result.get('recipients', [])
-        from .common import normalized
-        if not recipients or any(normalized(r['phoneNumber']) != message['peer'] for r in recipients):
+        if not recipients or any(store.normalize(r['phoneNumber']) != message['peer'] for r in recipients):
             raise GatewayError('status_recipient_mismatch')
         text = result.get('textMessage', {}).get('text')
         if text is not None and text != message['body']:

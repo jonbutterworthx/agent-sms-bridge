@@ -38,7 +38,7 @@ def main():
     args = p.parse_args()
     os.umask(0o077)
     config = load_config(args.config)
-    store = Store(Path(config['data_dir']) / 'messages.db')
+    store = Store(Path(config['data_dir']) / 'messages.db', config['normalization_profile'])
     value = json.loads(private_file(args.input_file).read_text()) if hasattr(args, 'input_file') else {}
     if args.command == 'health':
         print(json.dumps(store.health()))

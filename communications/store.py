@@ -7,7 +7,7 @@ import sqlite3
 import uuid
 from pathlib import Path
 
-from .common import digest, normalized, now, timestamp
+from .common import digest, normalized, normalization_profile, now, timestamp
 
 SCHEMA = '''
 CREATE TABLE IF NOT EXISTS metadata(key TEXT PRIMARY KEY,value TEXT NOT NULL);
@@ -69,7 +69,9 @@ class RateLimited(Exception):
 
 
 class Store:
-    def __init__(self, path):
+    def __init__(self, path, profile='strict'):
+        # Validate before opening or creating storage; profile is per instance.
+        self.normalization_profile = normalization_profile(profile)
         self.path = Path(path)
         self.path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
         os.umask(0o077)
@@ -106,9 +108,11 @@ class Store:
             row = db.execute('SELECT value FROM metadata WHERE key=?', (key,)).fetchone()
             return row[0] if row else None
 
-    @staticmethod
-    def policy(db, number):
-        number = normalized(number)
+    def normalize(self, value):
+        return normalized(value, self.normalization_profile)
+
+    def policy(self, db, number):
+        number = self.normalize(number)
         row = db.execute('''SELECT c.id,c.active FROM identifiers i JOIN contacts c
             ON c.id=i.contact_id WHERE i.kind='phone' AND i.normalized=?''', (number,)).fetchone()
         rule = db.execute('SELECT * FROM number_policy WHERE number=?', (number,)).fetchone()
@@ -132,7 +136,7 @@ class Store:
         return ident
 
     def identifier(self, contact, original):
-        number = normalized(original)
+        number = self.normalize(original)
         with self.transaction() as db:
             db.execute("INSERT INTO identifiers VALUES('phone',?,?,?)", (number, original, contact))
             db.execute('UPDATE messages SET contact_id=? WHERE peer=?', (contact, number))
@@ -140,7 +144,7 @@ class Store:
         return number
 
     def owner(self, name, number):
-        match = normalized(number)
+        match = self.normalize(number)
         if not match.startswith('+'):
             raise ValueError('owner_requires_international_number')
         with self.transaction() as db:
@@ -159,7 +163,7 @@ class Store:
             return ident
 
     def block(self, number, blocked, reason=''):
-        number = normalized(number)
+        number = self.normalize(number)
         with self.transaction() as db:
             db.execute('''INSERT INTO number_policy(number,blocked,reason,updated_at) VALUES(?,?,?,?)
                 ON CONFLICT(number) DO UPDATE SET blocked=excluded.blocked,reason=excluded.reason,
@@ -175,7 +179,7 @@ class Store:
         with self.transaction() as db:
             db.execute('INSERT INTO principals VALUES(?,?,?,?,1)',
                        (ident, hashlib.sha256(token.encode()).hexdigest(), json.dumps(scopes),
-                        json.dumps([normalized(n) for n in numbers])))
+                        json.dumps([self.normalize(n) for n in numbers])))
         return token
 
     def authenticate(self, token):
@@ -188,9 +192,8 @@ class Store:
                 raise Denied('unauthorized')
             return {**dict(row), 'scopes': json.loads(row['scopes']), 'numbers': json.loads(row['numbers'])}
 
-    @staticmethod
-    def require(principal, scope, number=None):
-        if scope not in principal['scopes'] or (number is not None and normalized(number) not in principal['numbers']):
+    def require(self, principal, scope, number=None):
+        if scope not in principal['scopes'] or (number is not None and self.normalize(number) not in principal['numbers']):
             raise Denied('forbidden')
 
     def intake(self, device, transport_id, source, event_type, raw):
@@ -231,9 +234,9 @@ class Store:
     def _incoming(self, db, event, raw, start):
         p = raw['payload']
         sender, recipient = p['sender'], p.get('recipient')
-        peer = normalized(sender)
+        peer = self.normalize(sender)
         if recipient is not None:
-            normalized(recipient)
+            self.normalize(recipient)
         body = p['message']
         if not isinstance(body, str) or len(body.encode()) > 131072:
             raise ValueError('invalid_body')
@@ -276,7 +279,7 @@ class Store:
         if not row:
             # Retain authenticated out-of-scope status events, but do not invent message bodies.
             return
-        if normalized(p.get('recipient') or p.get('phoneNumber')) != row['peer']:
+        if self.normalize(p.get('recipient') or p.get('phoneNumber')) != row['peer']:
             raise ValueError('recipient_mismatch')
         db.execute('INSERT INTO status_observations(message_id,observed_at,source,raw) VALUES(?,?,?,?)',
                    (row['id'], now(), 'webhook', event['raw']))
@@ -298,7 +301,7 @@ class Store:
         db.execute('INSERT OR IGNORE INTO event_messages VALUES(?,?)', (event['seq'], row['id']))
 
     def enqueue(self, principal, recipient, body, key):
-        peer = normalized(recipient)
+        peer = self.normalize(recipient)
         self.require(principal, 'messages:send', peer)
         if not isinstance(body, str) or not 1 <= len(body) <= 4000 or not isinstance(key, str) or not 8 <= len(key) <= 128:
             raise ValueError('invalid_outbound_request')

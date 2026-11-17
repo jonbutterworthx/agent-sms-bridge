@@ -5,12 +5,13 @@ import ipaddress
 import os
 from pathlib import Path
 from urllib.parse import urlsplit
-from .common import atomic_private_json, normalized, private_file, poll_interval
+from .common import atomic_private_json, normalized, private_file, poll_interval, normalization_profile
 
 
 def validate_config(value):
     if not isinstance(value,dict):raise ValueError('configuration_object_required')
     config=dict(value)
+    config['normalization_profile']=normalization_profile(config.get('normalization_profile','strict'))
     root=Path(config.get('data_dir',''))
     if not root.is_absolute() or '..' in root.parts or root==Path('/'):
         raise ValueError('absolute_private_data_directory_required')

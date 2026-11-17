@@ -5,7 +5,7 @@ Agent SMS Bridge keeps observed SMS in SQLite and exposes a private API with
 explicit recipient permissions. It works without an AI provider, hosted messaging
 service, or particular VPN or backup vendor.
 
-**0.1.0rc1 is a local review candidate, not a published release.** Intended
+**0.1.0rc2 is a local review candidate, not a published release.** Intended
 repository: `jonbutterworthx/agent-sms-bridge`. Licensed under [MIT](LICENSE); see [provenance](NOTICE.md).
 
 - Durable intake and history, with cursor recovery and duplicate suppression.
@@ -69,7 +69,7 @@ Then test the installed wheel outside the source directory:
 ```sh
 test_dir=$(mktemp -d)
 python3 -m venv "$test_dir/venv"
-"$test_dir/venv/bin/python" -m pip install --no-deps dist/agent_sms_bridge-0.1.0rc1-py3-none-any.whl
+"$test_dir/venv/bin/python" -m pip install --no-deps dist/agent_sms_bridge-0.1.0rc2-py3-none-any.whl
 cp -R tests "$test_dir/tests"
 (
   cd "$test_dir"

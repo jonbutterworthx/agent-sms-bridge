@@ -21,12 +21,31 @@ def timestamp(value):
     return parsed.astimezone(timezone.utc).isoformat(timespec='milliseconds')
 
 
-def normalized(value):
-    """Require an explicit country code; national and short identifiers remain opaque."""
-    if not isinstance(value,str) or not 1<=len(value)<=128:raise ValueError('invalid_identifier')
-    compact=re.sub(r'[ ()\-.]','',value.strip())
-    if re.fullmatch(r'\+[1-9][0-9]{1,14}',compact):return compact
-    return 'raw:'+value.strip()
+NORMALIZATION_PROFILES = ('strict', 'legacy-nanp-v1')
+
+
+def normalization_profile(value='strict'):
+    if value not in NORMALIZATION_PROFILES:
+        raise ValueError('invalid_normalization_profile')
+    return value
+
+
+def normalized(value, profile='strict'):
+    """Strict by default; explicit legacy profile preserves pre-release matching."""
+    normalization_profile(profile)
+    if not isinstance(value, str) or not 1 <= len(value) <= 128:
+        raise ValueError('invalid_identifier')
+    compact = re.sub(r'[ ()\-.]', '', value.strip())
+    if profile == 'legacy-nanp-v1':
+        if re.fullmatch(r'\+[1-9][0-9]{7,14}', compact):
+            return compact
+        if re.fullmatch(r'[2-9][0-9]{2}[2-9][0-9]{6}', compact):
+            return '+1' + compact
+        if re.fullmatch(r'1[2-9][0-9]{2}[2-9][0-9]{6}', compact):
+            return '+' + compact
+    elif re.fullmatch(r'\+[1-9][0-9]{1,14}', compact):
+        return compact
+    return 'raw:' + value.strip()
 
 
 def digest(value):
